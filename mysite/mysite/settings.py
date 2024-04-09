@@ -24,7 +24,7 @@ SECRET_KEY = "django-insecure-usr@2_@wz=*kh$^a^xt06n@#$b%1qdxp@%1ig3a9jvt=(lmcde
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -37,9 +37,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
 ]
 
+"""
+The order of MIDDLEWARE is important. 
+You should include the Debug Toolbar middleware as early as possible in the list. 
+However, it must come after any other middleware that encodes the response’s content, such as GZipMiddleware.
+"""
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -48,13 +55,19 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+
 
 ROOT_URLCONF = "mysite.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -110,8 +123,8 @@ TIME_ZONE = "Asia/Seoul"
 USE_I18N = True
 
 # USER_TZ가 True 일 때는 templates, forms에 설정한 TIME_ZONE이 적용됨
-# False 로 설정해야 models에도 TIME_ZONE 이 적용됨 
-USE_TZ = False   
+# False 로 설정해야 models에도 TIME_ZONE 이 적용됨
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
